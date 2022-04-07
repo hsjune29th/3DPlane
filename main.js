@@ -22,17 +22,14 @@ var HEIGHT, WIDTH;
 //INIT THREE JS, SCREEN AND MOUSE EVENTS
 
 function createScene() {
-	// Lấy ra width và height của màn hình,
-	// dùng để cài đặt tỉ lệ khung hình (aspect ratio) cho camera
-	// và size của renderer.
+	// Lấy ra width và height của màn hình, dùng để cài đặt tỉ lệ khung hình (aspect ratio) cho camera và size của renderer.
 	HEIGHT = window.innerHeight;
 	WIDTH = window.innerWidth;
 
 	// Tạo scene
 	scene = new THREE.Scene();
 
-	// Thêm hiệu ứng sương mù vào scene, cùng màu với
-	// màu nền đã style trước đó
+	// Thêm hiệu ứng sương mù vào scene
 	scene.fog = new THREE.Fog(0xf7d9aa, 100, 950);
 
 	// Tạo camera
@@ -55,28 +52,20 @@ function createScene() {
 	// Tạo renderer
 	renderer = new THREE.WebGLRenderer({
 		// Cho phép trong suốt để hiển thị màu nền
-		// đã định nghĩa trong CSS
 		alpha: true,
-
-		// Bật khử răng cưa; hiệu năng sẽ giảm
-		// nhưng sẽ ổn thôi vì project này ít đối tượng
+		// Bật khử răng cưa
 		antialias: true
 	});
 
-	// Xác định kích cỡ của renderer; trong trường hợp này,
-	// là full toàn màn hình
+	// Xác định kích cỡ của renderer
 	renderer.setSize(WIDTH, HEIGHT);
 
 	// Cho phép render bóng đổ
 	renderer.shadowMap.enabled = true;
-
-	// Thêm DOM của renderer vào
-	// container ta đã tạo trong HTML
+	// Thêm DOM của renderer vào container ta đã tạo trong HTML
 	container = document.getElementById('world');
 	container.appendChild(renderer.domElement);
-
-	// Nếu người dùng resize trình duyệt
-	// cần cập nhật lại camera và size của renderer
+	// Nếu người dùng resize trình duyệt cần cập nhật lại camera và size của renderer
 	window.addEventListener('resize', handleWindowResize, false);
 }
 
@@ -96,13 +85,9 @@ function handleWindowResize() {
 var ambientLight, hemisphereLight, shadowLight;
 
 function createLights() {
-	// Nguồn sáng bán cầu là loại có màu tô chuyển (gradient)
-	// tham số đầu tiên là màu trời, thứ 2 là màu đất,
-	// thứ 3 là cường độ ánh sáng
+	// Nguồn sáng bán cầu là loại có màu tô chuyển (gradient) (màu trời, màu đất, cường độ sáng)
 	hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
-
-	// Nguồn sáng có hướng tỏa ra từ 1 vị trí nhất định
-	// Nó giống như mặt trời, nghĩa là các tia được tạo ra song song với nhau.
+	// Nguồn sáng có hướng tỏa ra từ 1 vị trí nhất định, Nó giống như mặt trời, nghĩa là các tia được tạo ra song song với nhau.
 	shadowLight = new THREE.DirectionalLight(0xffffff, .9);
 
 	// Đặt vị trí cho nguồn sáng
@@ -119,8 +104,7 @@ function createLights() {
 	shadowLight.shadow.camera.near = 1;
 	shadowLight.shadow.camera.far = 1000;
 
-	// cài đặt độ phân giải của bóng đổ; càng cao càng đẹp,
-	// nhưng cũng càng nặng nề hơn
+	// cài đặt độ phân giải của bóng đổ
 	shadowLight.shadow.mapSize.width = 2048;
 	shadowLight.shadow.mapSize.height = 2048;
 
@@ -365,25 +349,17 @@ var AirPlane = function(){
 Sky = function(){
 	// Tạo container rỗng
 	this.mesh = new THREE.Object3D();
-
 	// chọn số  lượng đám mây rải rác trên bầu trời
-	this.nClouds = 20;
-
-	// Để phân phối các đám mây một cách nhất quán,
-	// chúng ta phải đặt chúng theo một góc thống nhất
+	this.nClouds = 10;
+	// Để phân phối các đám mây một cách nhất quán,chúng ta phải đặt chúng theo một góc thống nhất
 	var stepAngle = Math.PI*2 / this.nClouds;
-
 	// tạo các đám mây
 	for(var i=0; i<this.nClouds; i++){
 		var c = new Cloud();
-
-		// đặt góc xoay và vị trí của mỗi đám mây;
-		// chúng ta sẽ dùng chút lượng giác
+		// đặt góc xoay và vị trí của mỗi đám mây
 		var a = stepAngle*i; // đây là góc của đám mây
 		var h = 750 + Math.random()*200; // đây là khoảng cách giữa trung điểm của trục và đám mây
 
-		// Lượng giác!!! Hi vọng bạn vẫn còn nhớ chút Toán học :)
-		// nếu không thì:
 		// đơn giản là chuyển đổi tọa độ cực (góc, khoảng cách) sang tọa độ Descartes (x, y)
 		c.mesh.position.y = Math.sin(a)*h;
 		c.mesh.position.x = Math.cos(a)*h;
@@ -391,15 +367,12 @@ Sky = function(){
 		// xoay đám mây theo vị trí của nó
 		c.mesh.rotation.z = a + Math.PI/2;
 
-		// để kết quả tốt hơn, ta đặt các đám mây
-		// ở độ sâu ngẫu nhiên trong scene
+		// để kết quả tốt hơn, ta đặt các đám mây ở độ sâu ngẫu nhiên trong scene
 		c.mesh.position.z = -400-Math.random()*400;
-
 		// và cả độ phóng ngẫu nhiên cho mỗi đám mây
 		var s = 1+Math.random()*2;
 		c.mesh.scale.set(s,s,s);
 
-		// đừng quên thêm lưới vào container
 		this.mesh.add(c.mesh);
 	}
 }
@@ -453,15 +426,13 @@ Cloud = function(){
 	// Tạo một container rỗng để chứa các phần của đám mây
 	this.mesh = new THREE.Object3D();
 
-	// tạo khối lập phương;
-	// khối này sẽ được nhân ra để tạo ra các đám mây
+	// tạo khối lập phương, khối này sẽ được nhân ra để tạo ra các đám mây
 	var geom = new THREE.BoxGeometry(20,20,20);
 
 	// tạo chất liệu; chất liệu màu trắng là đủ
 	var mat = new THREE.MeshPhongMaterial({
-		color:Colors.white,
+		color:Colors.cloud,
 	});
-
 	// nhân hình khối lên một số ngẫu nhiên lần
 	var nBlocs = 3+Math.floor(Math.random()*3);
 	for (var i=0; i<nBlocs; i++ ){
@@ -553,7 +524,6 @@ function init(event){
   createSky();
   loop();
 }
-
 // HANDLE MOUSE EVENTS
 
 var mousePos = { x: 0, y: 0 };
